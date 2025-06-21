@@ -1,0 +1,33 @@
+<html>
+<head>
+  <title>RHEL 8 Hardening Report</title>
+</head>
+<body>
+  <h1>RHEL 8 Hardening Report</h1>
+  <table border="1">
+    <tr>
+      <th>Host</th>
+      <th>Location</th>
+      <th>OK</th>
+      <th>Changed</th>
+      <th>Failures</th>
+      <th>Skipped</th>
+      <th>Unreachable</th>
+    </tr>
+    {% for host, data in results.items() %}
+    <tr>
+      <td>{{ host }}</td>
+      <td>{{ data.location }}</td>
+      <td>{{ data.ok }}</td>
+      <td>{{ data.changed }}</td>
+      <td>{{ data.failures }}</td>
+      <td>{{ data.skipped }}</td>
+      <td>{{ data.unreachable }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <h2>Overall Summary</h2>
+  <p>Total Hosts: {{ results|length }}</p>
+  <p>Compliant Hosts: {{ results | selectattr('failures', 'equalto', 0) | list | length }}</p>
+</body>
+</html>

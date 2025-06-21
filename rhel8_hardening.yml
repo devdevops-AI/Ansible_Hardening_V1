@@ -1,0 +1,39 @@
+- name: Basic RHEL 8 hardening
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install firewalld
+      package:
+        name: firewalld
+        state: present
+
+    - name: Enable and start firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+
+    - name: Ensure SSH root login disabled
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        create: yes
+        backup: yes
+      notify: restart sshd
+
+    - name: Install dnf-automatic
+      package:
+        name: dnf-automatic
+        state: present
+
+    - name: Enable dnf-automatic timer
+      systemd:
+        name: dnf-automatic.timer
+        enabled: yes
+        state: started
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted
